@@ -37,6 +37,25 @@ describe JavaParse::JavaUnit do
       unit.head.gsub(/[\s]/, '').should == expected_head.gsub(/[\s]/, '')
     end
     
+    it "should return the interface unit body" do
+      unit = JavaUnit.new(@simple_interface)
+      expected_body = <<-BODY
+    	  @Perform public abstract void doStuff(); 
+      	public void doOtherStuff(); 
+      	@Perform @Annotation void doMoreStuff(); 
+      BODY
+      unit.body.gsub(/[\s]/, '').should == expected_body.gsub(/[\s]/, '')
+    end
+
+    it "should return the interface unit head" do
+      unit = JavaUnit.new(@simple_interface)
+      expected_head = <<-BODY
+        package org.mycompany
+        import java.util.Date;
+      BODY
+      unit.head.gsub(/[\s]/, '').should == expected_head.gsub(/[\s]/, '')
+    end
+    
   end
   
   context "Detection of class, interface, enum" do
