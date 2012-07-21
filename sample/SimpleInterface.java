@@ -8,5 +8,15 @@ import java.util.Date;
 /** class */
 
 public interface SimpleInterface {
-  
+	
+
+	@Perform
+	public abstract void doStuff(); 
+
+
+	public void doOtherStuff(); 
+
+	@Perform
+	@Annotation
+	void doMoreStuff(); 
 }      
