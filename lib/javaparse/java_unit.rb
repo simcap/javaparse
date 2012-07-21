@@ -6,7 +6,7 @@ module JavaParse
       @file_path = java_file_path
       @unit_name = File.basename(java_file_path, ".java")
       @uncommented_content = File.open(java_file_path) { |file|
-        file.read.gsub(/^(\s*\*).*$/, '').gsub(/^(\s*\/).*$/, '').gsub(/^$\n/, '')
+        file.read.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '')
       }
       validate_unit
       @head, @body = partition_unit
