@@ -14,6 +14,28 @@ describe JavaParse::JavaUnit do
     @error_class = File.expand_path("../../sample/ErrorClazzWithWrongClassName.java", __FILE__)
   end
   
+  context "Extract methods code blocks from class" do
+    
+    it "should extract method blocks from body of a class" do
+      unit = JavaUnit.new(@simple_class)
+      blocks = unit.method_blocks
+      blocks[0].gsub(/[\s]/, '').should == "private int hour;private int minute;public void calculateTime() {".gsub(/[\s]/, '')
+      blocks[1].gsub(/[\s]/, '').should == "@Annotatedpublic void rewindTime() {".gsub(/[\s]/, '')
+      blocks[2].gsub(/[\s]/, '').should == "@Annotated@OtherAnnotatedvoid rewindTime() {".gsub(/[\s]/, '')
+      blocks.size.should == 4
+    end
+    
+    it "should extract method blocks from body of an interface" do
+      unit = JavaUnit.new(@simple_interface)
+      blocks = unit.method_blocks
+      blocks[0].gsub(/[\s]/, '').should == "@Perform public abstract void doStuff()".gsub(/[\s]/, '')
+      blocks[1].gsub(/[\s]/, '').should == "public void doOtherStuff()".gsub(/[\s]/, '')
+      blocks[2].gsub(/[\s]/, '').should == "@Perform @Annotation void doMoreStuff()".gsub(/[\s]/, '')
+      blocks.size.should == 4
+    end
+    
+  end
+  
   context "Extract body & head of the unit" do
     
     it "should return the class unit body" do

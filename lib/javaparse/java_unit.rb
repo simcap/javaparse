@@ -19,6 +19,11 @@ module JavaParse
     def head
       @head
     end
+    
+    def method_blocks
+      return @body.split("}") if clazz? or enum?
+      return @body.split(";") if interface? 
+    end
         
     def clazz?
         unit_declaration_line.include? 'class'
