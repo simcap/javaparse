@@ -17,17 +17,17 @@ describe JavaUnit do
     
     it "should extract method blocks from body of a class" do
       blocks = @simple_class.method_blocks
-      blocks[0].should have_equivalent_content "private int hour;private int minute;public void calculateTime() {"
-      blocks[1].should have_equivalent_content "@Annotatedpublic void rewindTime() {"
-      blocks[2].should have_equivalent_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
+      blocks[0].should have_equivalent_code_content "private int hour;private int minute;public void calculateTime() {"
+      blocks[1].should have_equivalent_code_content "@Annotatedpublic void rewindTime() {"
+      blocks[2].should have_equivalent_code_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
       blocks.size.should == 4
     end
     
     it "should extract method blocks from body of an interface" do
       blocks = @simple_interface.method_blocks
-      blocks[0].should have_equivalent_content "@Perform public abstract void doStuff()"
-      blocks[1].should have_equivalent_content "public void doOtherStuff()"
-      blocks[2].should have_equivalent_content "@Perform @Annotation void doMoreStuff()"
+      blocks[0].should have_equivalent_code_content "@Perform public abstract void doStuff()"
+      blocks[1].should have_equivalent_code_content "public void doOtherStuff()"
+      blocks[2].should have_equivalent_code_content "@Perform @Annotation void doMoreStuff()"
       blocks.size.should == 4
     end
     
@@ -41,7 +41,7 @@ describe JavaUnit do
           @Annotated public void rewindTime() {}
           @Annotated @OtherAnnotated void rewindTime() {}
       BODY
-      @simple_class.body.should have_equivalent_content expected_body
+      @simple_class.body.should have_equivalent_code_content expected_body
     end
 
     it "should return the class unit head" do
@@ -51,7 +51,7 @@ describe JavaUnit do
         import java.io.BufferedReader;
         import java.io.CharArrayWriter;
       BODY
-      @simple_class.head.should have_equivalent_content expected_head
+      @simple_class.head.should have_equivalent_code_content expected_head
     end
     
     it "should return the interface unit body" do
@@ -60,7 +60,7 @@ describe JavaUnit do
       	public void doOtherStuff(); 
       	@Perform @Annotation void doMoreStuff(); 
       BODY
-      @simple_interface.body.should have_equivalent_content expected_body
+      @simple_interface.body.should have_equivalent_code_content expected_body
     end
 
     it "should return the interface unit head" do
@@ -68,7 +68,7 @@ describe JavaUnit do
         package org.mycompany
         import java.util.Date;
       BODY
-      @simple_interface.head.should have_equivalent_content expected_head
+      @simple_interface.head.should have_equivalent_code_content expected_head
     end
     
   end
@@ -115,9 +115,11 @@ describe JavaUnit do
     end
   end
   
-  RSpec::Matchers.define :have_equivalent_content do |expected|
+  # Match two java content removing comments, whitespaces and empty lines
+  RSpec::Matchers.define :have_equivalent_code_content do |expected|
     match do |actual|
-      actual.gsub(/[\s]/, '') == expected.gsub(/[\s]/, '')
+      actual.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '').gsub(/[\s]/, '') \
+        == expected.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '').gsub(/[\s]/, '')
     end
   end
   
