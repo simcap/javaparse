@@ -42,7 +42,14 @@ module JavaParse
     
     def partition_unit
       head, match, body = @content.partition(unit_declaration_line)
+      head = removing_above_package(head)
       [head.strip!, body.strip!.chomp!("}")]
+    end
+    
+    def removing_above_package(text)
+      text.each_line.drop_while {|line|
+        not line.strip.start_with?("package")
+      }.join
     end
     
   end

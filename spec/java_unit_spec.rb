@@ -42,7 +42,7 @@ describe JavaUnit do
       BODY
       @simple_class.body.should have_equivalent_code_content expected_body
     end
-
+    
     it "should return the class unit head" do
       expected_head = <<-BODY
         package org.mycompany
@@ -52,6 +52,11 @@ describe JavaUnit do
       BODY
       @simple_class.head.should have_equivalent_code_content expected_head
     end
+    
+    it "head should not contain content above package" do
+      @simple_class.head.should start_with("package ")
+    end
+    
     
     it "should return the interface unit body" do
       expected_body = <<-BODY

@@ -1,8 +1,7 @@
 /**
- * 
- * my fake license stuff
- *
- */
+* Licensing stuff 
+* should be removed
+*/
 
 package org.mycompany
 
@@ -10,11 +9,9 @@ import java.util.Date;
 import java.io.BufferedReader;
 import java.io.CharArrayWriter;
 
-
-/* confusing comments
-//interface
-/** interface */
-/* interface */
+/**
+* this is my javadoc
+*/
 
 public class SimpleClazz {
 	
