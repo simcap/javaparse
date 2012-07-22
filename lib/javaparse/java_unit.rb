@@ -2,20 +2,14 @@ module JavaParse
   
   class JavaUnit
     
+    attr_reader :body, :head
+    
     def initialize(java_file_path)
       @file_path = java_file_path
       @unit_name = File.basename(java_file_path, ".java")
       @uncommented_content = File.open(java_file_path) { |file| file.read }
       validate_unit
       @head, @body = partition_unit
-    end
-    
-    def body
-      @body
-    end
-    
-    def head
-      @head
     end
     
     def method_blocks
