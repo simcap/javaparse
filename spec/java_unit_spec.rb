@@ -6,20 +6,17 @@ include JavaParse
 
 describe JavaUnit do
 
-
   before(:all) do
-    @simple_class = File.expand_path("../../sample/SimpleClazz.java", __FILE__)
-    @simple_enum = File.expand_path("../../sample/SimpleEnum.java", __FILE__)
-    @simple_interface = File.expand_path("../../sample/SimpleInterface.java", __FILE__)
-    @clazz_with_inner_interface = File.expand_path("../../sample/SimpleClazzWithInnerInterface.java", __FILE__)
-    @error_class = File.expand_path("../../sample/ErrorClazzWithWrongClassName.java", __FILE__)
+    @simple_class = JavaUnit.new(file_path("SimpleClazz.java"))
+    @simple_enum = JavaUnit.new(file_path("SimpleEnum.java"))
+    @simple_interface = JavaUnit.new(file_path("SimpleInterface.java"))
+    @clazz_with_inner_interface = JavaUnit.new(file_path("SimpleClazzWithInnerInterface.java"))
   end
   
   context "Extract methods code blocks from class" do
     
     it "should extract method blocks from body of a class" do
-      unit = JavaUnit.new(@simple_class)
-      blocks = unit.method_blocks
+      blocks = @simple_class.method_blocks
       blocks[0].should have_equivalent_content "private int hour;private int minute;public void calculateTime() {"
       blocks[1].should have_equivalent_content "@Annotatedpublic void rewindTime() {"
       blocks[2].should have_equivalent_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
@@ -27,8 +24,7 @@ describe JavaUnit do
     end
     
     it "should extract method blocks from body of an interface" do
-      unit = JavaUnit.new(@simple_interface)
-      blocks = unit.method_blocks
+      blocks = @simple_interface.method_blocks
       blocks[0].should have_equivalent_content "@Perform public abstract void doStuff()"
       blocks[1].should have_equivalent_content "public void doOtherStuff()"
       blocks[2].should have_equivalent_content "@Perform @Annotation void doMoreStuff()"
@@ -40,43 +36,39 @@ describe JavaUnit do
   context "Extract body & head of the unit" do
     
     it "should return the class unit body" do
-      unit = JavaUnit.new(@simple_class)
       expected_body = <<-BODY
           private int hour;private int minute;public void calculateTime() {}
           @Annotated public void rewindTime() {}
           @Annotated @OtherAnnotated void rewindTime() {}
       BODY
-      unit.body.should have_equivalent_content expected_body
+      @simple_class.body.should have_equivalent_content expected_body
     end
 
     it "should return the class unit head" do
-      unit = JavaUnit.new(@simple_class)
       expected_head = <<-BODY
         package org.mycompany
         import java.util.Date;
         import java.io.BufferedReader;
         import java.io.CharArrayWriter;
       BODY
-      unit.head.gsub(/[\s]/, '').should == expected_head.gsub(/[\s]/, '')
+      @simple_class.head.should have_equivalent_content expected_head
     end
     
     it "should return the interface unit body" do
-      unit = JavaUnit.new(@simple_interface)
       expected_body = <<-BODY
     	  @Perform public abstract void doStuff(); 
       	public void doOtherStuff(); 
       	@Perform @Annotation void doMoreStuff(); 
       BODY
-      unit.body.should have_equivalent_content expected_body
+      @simple_interface.body.should have_equivalent_content expected_body
     end
 
     it "should return the interface unit head" do
-      unit = JavaUnit.new(@simple_interface)
       expected_head = <<-BODY
         package org.mycompany
         import java.util.Date;
       BODY
-      unit.head.should have_equivalent_content expected_head.gsub(/[\s]/, '')
+      @simple_interface.head.should have_equivalent_content expected_head
     end
     
   end
@@ -84,43 +76,42 @@ describe JavaUnit do
   context "Detection of class, interface, enum" do
   
     it "should raise error if filename is different form the unit name" do
-      expect { JavaUnit.new(@error_class)}.to raise_error(RuntimeError, /#{@error_class}/)
+      expect { JavaUnit.new(file_path("ErrorClazzWithWrongClassName.java"))}.to raise_error(RuntimeError, /#{@error_class}/)
     end
 
     it "should detect class compilation unit" do
-      unit = JavaUnit.new(@simple_class)
-      unit.should be_clazz
-      unit.should_not be_enum
-      unit.should_not be_interface
+      @simple_class.should be_clazz
+      @simple_class.should_not be_enum
+      @simple_class.should_not be_interface
     end
 
     it "should detect enum compilation unit" do
-      unit = JavaUnit.new(@simple_enum)
-      unit.should be_enum
-      unit.should_not be_clazz
-      unit.should_not be_interface
+      @simple_enum.should be_enum
+      @simple_enum.should_not be_clazz
+      @simple_enum.should_not be_interface
     end
 
     it "should detect interface compilation unit" do
-      JavaUnit.new(@simple_interface).should be_interface
+      @simple_interface.should_not be_enum
+      @simple_interface.should_not be_clazz
+      @simple_interface.should be_interface
     end
 
     it "should detect class compilation unit with confusing comments" do
-      unit = JavaUnit.new(@simple_class)
-      unit.should be_clazz
-      unit.should_not be_interface
+      @simple_class.should be_clazz
+      @simple_class.should_not be_interface
+      @simple_class.should_not be_enum
     end
   
     it "should detect interface compilation unit with confusing comments" do
-      unit = JavaUnit.new(@simple_interface)
-      unit.should_not be_clazz
-      unit.should be_interface
+      @simple_interface.should_not be_clazz
+      @simple_interface.should be_interface
+      @simple_interface.should_not be_enum
     end
   
     it "should detect class with inner interface as class" do
-      unit = JavaUnit.new(@clazz_with_inner_interface)
-      unit.should be_clazz
-      unit.should_not be_interface
+      @clazz_with_inner_interface.should be_clazz
+      @clazz_with_inner_interface.should_not be_interface
     end
   end
   
@@ -129,5 +120,10 @@ describe JavaUnit do
       actual.gsub(/[\s]/, '') == expected.gsub(/[\s]/, '')
     end
   end
+  
+  def file_path(class_name)
+    File.expand_path("../../sample/#{class_name}", __FILE__)
+  end
+  
   
 end
