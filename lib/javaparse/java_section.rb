@@ -10,6 +10,14 @@ module JavaParse
       @javadoc ||= parse_javadoc
     end
     
+    def content
+      @content
+    end
+    
+    def method_missing(method, *args, &blk)
+      @content.send(method, *args)
+    end
+    
     private 
     
     def parse_javadoc

@@ -54,9 +54,8 @@ describe JavaUnit do
     end
     
     it "head should not contain content above package" do
-      @simple_class.head.should start_with("package ")
-    end
-    
+      @simple_class.head.content.should start_with("package ")
+    end    
     
     it "should return the interface unit body" do
       expected_body = <<-BODY
