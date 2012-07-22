@@ -4,7 +4,8 @@ require 'javaparse'
 
 include JavaParse
 
-describe JavaParse::JavaUnit do
+describe JavaUnit do
+
 
   before(:all) do
     @simple_class = File.expand_path("../../sample/SimpleClazz.java", __FILE__)
@@ -19,18 +20,18 @@ describe JavaParse::JavaUnit do
     it "should extract method blocks from body of a class" do
       unit = JavaUnit.new(@simple_class)
       blocks = unit.method_blocks
-      blocks[0].gsub(/[\s]/, '').should == "private int hour;private int minute;public void calculateTime() {".gsub(/[\s]/, '')
-      blocks[1].gsub(/[\s]/, '').should == "@Annotatedpublic void rewindTime() {".gsub(/[\s]/, '')
-      blocks[2].gsub(/[\s]/, '').should == "@Annotated@OtherAnnotatedvoid rewindTime() {".gsub(/[\s]/, '')
+      blocks[0].should have_equivalent_content "private int hour;private int minute;public void calculateTime() {"
+      blocks[1].should have_equivalent_content "@Annotatedpublic void rewindTime() {"
+      blocks[2].should have_equivalent_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
       blocks.size.should == 4
     end
     
     it "should extract method blocks from body of an interface" do
       unit = JavaUnit.new(@simple_interface)
       blocks = unit.method_blocks
-      blocks[0].gsub(/[\s]/, '').should == "@Perform public abstract void doStuff()".gsub(/[\s]/, '')
-      blocks[1].gsub(/[\s]/, '').should == "public void doOtherStuff()".gsub(/[\s]/, '')
-      blocks[2].gsub(/[\s]/, '').should == "@Perform @Annotation void doMoreStuff()".gsub(/[\s]/, '')
+      blocks[0].should have_equivalent_content "@Perform public abstract void doStuff()"
+      blocks[1].should have_equivalent_content "public void doOtherStuff()"
+      blocks[2].should have_equivalent_content "@Perform @Annotation void doMoreStuff()"
       blocks.size.should == 4
     end
     
@@ -45,7 +46,7 @@ describe JavaParse::JavaUnit do
           @Annotated public void rewindTime() {}
           @Annotated @OtherAnnotated void rewindTime() {}
       BODY
-      unit.body.gsub(/[\s]/, '').should == expected_body.gsub(/[\s]/, '')
+      unit.body.should have_equivalent_content expected_body
     end
 
     it "should return the class unit head" do
@@ -66,7 +67,7 @@ describe JavaParse::JavaUnit do
       	public void doOtherStuff(); 
       	@Perform @Annotation void doMoreStuff(); 
       BODY
-      unit.body.gsub(/[\s]/, '').should == expected_body.gsub(/[\s]/, '')
+      unit.body.should have_equivalent_content expected_body
     end
 
     it "should return the interface unit head" do
@@ -75,7 +76,7 @@ describe JavaParse::JavaUnit do
         package org.mycompany
         import java.util.Date;
       BODY
-      unit.head.gsub(/[\s]/, '').should == expected_head.gsub(/[\s]/, '')
+      unit.head.should have_equivalent_content expected_head.gsub(/[\s]/, '')
     end
     
   end
@@ -123,5 +124,10 @@ describe JavaParse::JavaUnit do
     end
   end
   
+  RSpec::Matchers.define :have_equivalent_content do |expected|
+    match do |actual|
+      actual.gsub(/[\s]/, '') == expected.gsub(/[\s]/, '')
+    end
+  end
   
 end
