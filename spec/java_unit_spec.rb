@@ -1,5 +1,4 @@
 require 'rspec'
-require 'stringio'
 require 'javaparse'
 
 include JavaParse
@@ -118,8 +117,8 @@ describe JavaUnit do
   # Matches two java content removing comments, whitespaces and empty lines
   RSpec::Matchers.define :have_equivalent_code_content do |expected|
     match do |actual|
-      actual.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '').gsub(/[\s]/, '') \
-        == expected.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '').gsub(/[\s]/, '')
+      actual.gsub(/^(\s*\*|\s*\/).*$|[\s]/, '').gsub(/^$\n/, '') \
+        == expected.gsub(/^(\s*\*|\s*\/).*$|[\s]/, '').gsub(/^$\n/, '')
     end
   end
   
