@@ -20,7 +20,7 @@ describe JavaUnit do
       blocks[0].should have_equivalent_code_content "private int hour;private int minute;public void calculateTime() {"
       blocks[1].should have_equivalent_code_content "@Annotatedpublic void rewindTime() {"
       blocks[2].should have_equivalent_code_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
-      blocks.size.should == 4
+      blocks.size.should == 3
     end
     
     it "should extract method blocks from body of an interface" do
@@ -28,7 +28,7 @@ describe JavaUnit do
       blocks[0].should have_equivalent_code_content "@Perform public abstract void doStuff()"
       blocks[1].should have_equivalent_code_content "public void doOtherStuff()"
       blocks[2].should have_equivalent_code_content "@Perform @Annotation void doMoreStuff()"
-      blocks.size.should == 4
+      blocks.size.should == 3
     end
     
   end
@@ -115,7 +115,7 @@ describe JavaUnit do
     end
   end
   
-  # Match two java content removing comments, whitespaces and empty lines
+  # Matches two java content removing comments, whitespaces and empty lines
   RSpec::Matchers.define :have_equivalent_code_content do |expected|
     match do |actual|
       actual.gsub(/^(\s*\*|\s*\/).*$/, '').gsub(/^$\n/, '').gsub(/[\s]/, '') \
