@@ -13,16 +13,8 @@ module JavaParse
     end
     
     def method_blocks
-      if (clazz? or enum?)
-        sections = @body.split("}")
-        sections.pop
-        return sections
-      end
-      if interface? 
-        sections = @body.split(";") 
-        sections.pop
-        return sections
-      end  
+      return @body.split("}")[0...-1] if (clazz? or enum?)
+      return @body.split(";")[0...-1] if (interface?)
     end
         
     def clazz?
