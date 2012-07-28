@@ -129,6 +129,4 @@ describe JavaUnit do
   def file_path(class_name)
     File.expand_path("../../sample/#{class_name}", __FILE__)
   end
-  
-  
 end
