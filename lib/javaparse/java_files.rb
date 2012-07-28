@@ -4,14 +4,16 @@ module JavaParse
     
     def initialize(*directories)
       @java_units = []
-      directories.uniq.each { |directory|
-        @java_units.concat(Dir.glob("#{directory}/**/*.java").map { |path| 
+      paths = directories.map { |directory|
+        Dir.glob("#{directory}/**/*.java")
+      }.flatten
+      paths.uniq!
+      paths.each { |path| 
             begin
-              JavaUnit.new(path)
+              @java_units.push(JavaUnit.new(path))
             rescue 
               nil
             end
-          }.select {|el| not el.nil?})
       }
     end
     

@@ -12,7 +12,11 @@ describe JavaFiles do
     end
 
     it "should count the valid java files collected not counting twice the same file" do
-      JavaFiles.new(full_path("collect-samples"), full_path("sample"), full_path("sample")).count.should == 10
+      JavaFiles.new(full_path("collect-samples/one"), full_path("collect-samples"), full_path("sample")).count.should == 10
+    end
+
+    it "should count 0 when no java files found" do
+      JavaFiles.new(full_path("lib")).count.should == 0
     end
     
   end
