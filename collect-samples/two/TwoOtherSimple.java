@@ -1,4 +1,4 @@
-package one;
+package two;
 
 public class TwoOtherSimple {
 
