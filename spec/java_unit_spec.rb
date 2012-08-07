@@ -16,6 +16,7 @@ describe JavaUnit do
     
     it "should extract method blocks from body of a class" do
       blocks = @simple_class.method_blocks
+      blocks[0].class.should == JavaSection
       blocks[0].should have_equivalent_code_content "private int hour;private int minute;public void calculateTime() {"
       blocks[1].should have_equivalent_code_content "@Annotatedpublic void rewindTime() {"
       blocks[2].should have_equivalent_code_content "@Annotated@OtherAnnotatedvoid rewindTime() {"
@@ -24,6 +25,7 @@ describe JavaUnit do
     
     it "should extract method blocks from body of an interface" do
       blocks = @simple_interface.method_blocks
+      blocks[0].class.should == JavaSection
       blocks[0].should have_equivalent_code_content "@Perform public abstract void doStuff()"
       blocks[1].should have_equivalent_code_content "public void doOtherStuff()"
       blocks[2].should have_equivalent_code_content "@Perform @Annotation void doMoreStuff()"

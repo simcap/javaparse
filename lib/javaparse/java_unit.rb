@@ -16,8 +16,8 @@ module JavaParse
     end
     
     def method_blocks
-      return @body.split("}")[0...-1] if (clazz? or enum?)
-      return @body.split(";")[0...-1] if (interface?)
+      return @body.split("}")[0...-1].map{ |block| JavaSection.new(block) } if (clazz? or enum?)
+      return @body.split(";")[0...-1].map{ |block| JavaSection.new(block) } if (interface?)
     end
             
     def clazz?
