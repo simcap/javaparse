@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "javaparse"
-  s.version = "0.0.6"
+  s.version = "0.0.7"
   s.platform = Gem::Platform::RUBY
   s.authors = ["Simon Caplette"]
   s.summary = %q{Get info from Java files}
