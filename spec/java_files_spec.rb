@@ -5,6 +5,17 @@ include JavaParse
 
 describe JavaFiles do
   
+  it "'each' should iterates through the files collected" do
+    files = JavaFiles.new(full_path("collect-samples/one"))
+    actual = []
+    files.each { |file|
+      actual << file.file_name
+    }
+    actual.size.should == 2
+    actual[0].should == "OneOtherSimple.java"
+    actual[1].should == "OneSimple.java"
+  end
+  
   context "Counting files" do
    
     it "should count the valid java files collected" do
@@ -33,6 +44,10 @@ describe JavaFiles do
 
     it "should count the CLOC (comment line of codes)" do
       JavaFiles.new(full_path("collect-samples"), full_path("sample")).count(:cloc).should == 24
+    end
+
+    it "should count all the lines from the files" do
+      JavaFiles.new(full_path("collect-samples"), full_path("sample")).count(:all_lines).should == 119
     end
 
     it "should raise exception if counting invalid type" do

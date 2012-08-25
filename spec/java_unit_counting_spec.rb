@@ -19,6 +19,11 @@ describe JavaUnit do
     enum = JavaUnit.new(File.expand_path("../../sample/SimpleEnum.java", __FILE__))
     enum.cloc.should == 9
   end
+
+  it "should count the total number of lines" do
+    enum = JavaUnit.new(File.expand_path("../../sample/SimpleEnum.java", __FILE__))
+    enum.all_lines.should == 17
+  end
   
 
 end
