@@ -11,6 +11,15 @@ task :spec do
 	end
 end
 
+desc "Push new gem to ruby forge"
+task :release => [:spec, :clean_gems, :upgrade_gem_version] do
+  gem_build = `gem build javaparse.gemspec`
+  puts gem_build
+  gem_version = gem_build.match(/Version:\s(\d\.\d\.\d)/)[1]
+  puts "Pushing version #{gem_version}"
+  puts `gem push javaparse-#{gem_version}.gem`
+end
+
 desc 'Upgrade current version of gem'
 task :upgrade_gem_version do
     text = File.read("javaparse.gemspec")
