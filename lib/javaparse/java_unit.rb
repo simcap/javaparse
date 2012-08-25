@@ -2,9 +2,9 @@ module JavaParse
     
   class JavaUnit
     
-    include LineCounter
+    include LineCounter, MethodGraber
     
-    attr_reader :file_name, :body, :head, :loc, :bloc, :cloc, :all_lines
+    attr_reader :file_name, :unit_name, :body, :head, :methods, :loc, :bloc, :cloc, :all_lines
     
     def initialize(java_file_path)
       @file_path = java_file_path
@@ -13,6 +13,7 @@ module JavaParse
       @content = File.open(@file_path) { |file| file.read }
       validate_unit
       @head, @body = partition_unit
+      @methods = grab_methods(@body)
       count_lines
     end
     
